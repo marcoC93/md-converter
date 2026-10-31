@@ -193,17 +193,18 @@ un valore predefinito prudente. Le più utili:
 
 ## Documentazione
 
-| Documento                                                | Contenuto                                                                 |
-| -------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [docs/architecture.md](docs/architecture.md)             | architettura, flusso di una conversione, API, scelte tecniche, dipendenze |
-| [docs/conversion-matrix.md](docs/conversion-matrix.md)   | pipeline per ogni coppia di formati, modalità, fedeltà                    |
-| [docs/security.md](docs/security.md)                     | minacce, contromisure, codici di errore                                   |
-| [docs/docker.md](docs/docker.md)                         | Docker Compose, Docker Desktop, WSL2, ciclo di vita dei file              |
-| [docs/install-windows.md](docs/install-windows.md)       | installazione nativa su Windows                                           |
-| [docs/install-macos.md](docs/install-macos.md)           | installazione nativa su macOS (Homebrew)                                  |
-| [docs/install-linux.md](docs/install-linux.md)           | installazione nativa su Debian/Ubuntu                                     |
-| [docs/troubleshooting.md](docs/troubleshooting.md)       | problemi frequenti e soluzioni                                            |
-| [docs/testing.md](docs/testing.md)                       | test unitari, di integrazione, E2E e smoke                                |
-| [docs/extending.md](docs/extending.md)                   | nuova conversione, nuova lingua OCR, nuova lingua dell'interfaccia        |
-| [docs/known-limitations.md](docs/known-limitations.md)   | limiti noti                                                               |
-| [docs/implementation-log.md](docs/implementation-log.md) | decisioni e problemi incontrati durante lo sviluppo                       |
+| Documento                                                | Contenuto                                                                     |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [docs/architecture.md](docs/architecture.md)             | architettura, flusso di una conversione, API, scelte tecniche, dipendenze     |
+| [docs/code-guide.md](docs/code-guide.md)                 | guida al codice: moduli e funzioni di backend, frontend e pacchetto condiviso |
+| [docs/conversion-matrix.md](docs/conversion-matrix.md)   | pipeline per ogni coppia di formati, modalità, fedeltà                        |
+| [docs/security.md](docs/security.md)                     | minacce, contromisure, codici di errore                                       |
+| [docs/docker.md](docs/docker.md)                         | Docker Compose, Docker Desktop, WSL2, ciclo di vita dei file                  |
+| [docs/install-windows.md](docs/install-windows.md)       | installazione nativa su Windows                                               |
+| [docs/install-macos.md](docs/install-macos.md)           | installazione nativa su macOS (Homebrew)                                      |
+| [docs/install-linux.md](docs/install-linux.md)           | installazione nativa su Debian/Ubuntu                                         |
+| [docs/troubleshooting.md](docs/troubleshooting.md)       | problemi frequenti e soluzioni                                                |
+| [docs/testing.md](docs/testing.md)                       | test unitari, di integrazione, E2E e smoke                                    |
+| [docs/extending.md](docs/extending.md)                   | nuova conversione, nuova lingua OCR, nuova lingua dell'interfaccia            |
+| [docs/known-limitations.md](docs/known-limitations.md)   | limiti noti                                                                   |
+| [docs/implementation-log.md](docs/implementation-log.md) | decisioni e problemi incontrati durante lo sviluppo                           |

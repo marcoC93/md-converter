@@ -3,6 +3,9 @@
 Questo documento spiega **come è fatto** il convertitore e **perché** è fatto così. È pensato per
 chi deve modificare il codice per la prima volta.
 
+Per la descrizione del codice modulo per modulo (funzioni, componenti, composable) vedi
+[code-guide.md](code-guide.md).
+
 ## Visione d'insieme
 
 ```
