@@ -1,0 +1,264 @@
+/*
+ * Stili globali. I colori sono variabili CSS: il tema scuro cambia solo i valori.
+ * Tutti gli abbinamenti testo/sfondo rispettano un contrasto di almeno 4.5:1 (WCAG AA).
+ */
+:root {
+  --color-bg: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef0f3;
+  --color-border: #c9ced6;
+  --color-text: #1a1d23;
+  --color-text-muted: #4b5361;
+  --color-primary: #1d4ed8;
+  --color-primary-hover: #1e40af;
+  --color-on-primary: #ffffff;
+  --color-focus: #b45309;
+  --color-success: #166534;
+  --color-success-bg: #dcfce7;
+  --color-error: #b91c1c;
+  --color-error-bg: #fee2e2;
+  --color-warning: #854d0e;
+  --color-warning-bg: #fef3c7;
+  --color-info-bg: #dbeafe;
+  --color-info: #1e3a8a;
+  --radius: 10px;
+  --radius-small: 6px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 6%), 0 2px 8px rgb(0 0 0 / 6%);
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f1115;
+  --color-surface: #181b21;
+  --color-surface-muted: #22262e;
+  --color-border: #3d4450;
+  --color-text: #e8eaed;
+  --color-text-muted: #b0b8c4;
+  --color-primary: #8ab4ff;
+  --color-primary-hover: #a9c7ff;
+  --color-on-primary: #0b1220;
+  --color-focus: #fbbf24;
+  --color-success: #86efac;
+  --color-success-bg: #12301d;
+  --color-error: #fca5a5;
+  --color-error-bg: #3b1515;
+  --color-warning: #fcd34d;
+  --color-warning-bg: #352a0c;
+  --color-info-bg: #172544;
+  --color-info: #bfd4ff;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    --color-bg: #0f1115;
+    --color-surface: #181b21;
+    --color-surface-muted: #22262e;
+    --color-border: #3d4450;
+    --color-text: #e8eaed;
+    --color-text-muted: #b0b8c4;
+    --color-primary: #8ab4ff;
+    --color-primary-hover: #a9c7ff;
+    --color-on-primary: #0b1220;
+    --color-focus: #fbbf24;
+    --color-success: #86efac;
+    --color-success-bg: #12301d;
+    --color-error: #fca5a5;
+    --color-error-bg: #3b1515;
+    --color-warning: #fcd34d;
+    --color-warning-bg: #352a0c;
+    --color-info-bg: #172544;
+    --color-info: #bfd4ff;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+/* Focus sempre visibile, anche con tema scuro, per chi usa la tastiera. */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-small);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--color-surface-muted);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.button--primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.button--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.button--small {
+  min-height: 36px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.notice {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-small);
+  border-left: 4px solid currentcolor;
+  margin: 0.75rem 0;
+  font-size: 0.925rem;
+}
+
+.notice--info {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.notice--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.notice--error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+fieldset {
+  border: 0;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+legend {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding: 0;
+}
+
+.choice {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.5rem 0.25rem;
+}
+
+.choice input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.choice__description {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface-muted);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

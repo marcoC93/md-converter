@@ -1,0 +1,39 @@
+# Avvio:  docker compose up -d --build      Interfaccia: http://127.0.0.1:8080
+# Arresto: docker compose down
+services:
+  converter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: md-converter:1.0.0
+    # SOLO 127.0.0.1: il servizio non è raggiungibile da altri computer della rete.
+    # Non scrivere "8080:8080": equivale a "0.0.0.0:8080:8080" ed espone il servizio sulla LAN.
+    ports:
+      - '127.0.0.1:${HOST_PORT:-8080}:8080'
+    environment:
+      JOB_TTL_MINUTES: ${JOB_TTL_MINUTES:-60}
+      MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB:-50}
+      MAX_TOTAL_SIZE_MB: ${MAX_TOTAL_SIZE_MB:-200}
+      MAX_FILES_PER_JOB: ${MAX_FILES_PER_JOB:-20}
+      MAX_CONCURRENT_JOBS: ${MAX_CONCURRENT_JOBS:-2}
+      CONVERSION_TIMEOUT_SECONDS: ${CONVERSION_TIMEOUT_SECONDS:-300}
+      OCR_LANGUAGES: ${OCR_LANGUAGES:-ita,eng}
+      OCR_JOBS: ${OCR_JOBS:-1}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    # /tmp è in RAM (tmpfs): i documenti non vengono mai scritti sul disco dell'host e
+    # spariscono quando il container si ferma. Aumenta "size" per lavorare con file molto grandi.
+    tmpfs:
+      - /tmp:size=2g,mode=1777
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Processo init minimale: inoltra i segnali (arresto controllato) e raccoglie i processi orfani.
+    init: true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4g
+    restart: unless-stopped

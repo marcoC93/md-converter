@@ -1,0 +1,22 @@
+{
+  "name": "@md-converter/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tipi e costanti condivisi tra frontend e backend",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.5"
+  }
+}

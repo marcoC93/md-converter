@@ -1,0 +1,37 @@
+{
+  "name": "md-converter",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Convertitore locale e offline tra Markdown, DOCX e PDF",
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build:shared": "pnpm --filter @md-converter/shared build",
+    "dev": "pnpm build:shared && pnpm --parallel --filter @md-converter/backend --filter @md-converter/frontend dev",
+    "build": "pnpm -r build",
+    "start": "node --env-file-if-exists=.env apps/backend/dist/index.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm build:shared && pnpm -r typecheck",
+    "test": "pnpm build:shared && pnpm -r test",
+    "test:e2e": "pnpm --filter @md-converter/frontend test:e2e",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
+    "fixtures": "node tests/fixtures/scripts/generate-fixtures.mjs",
+    "smoke": "node tests/smoke/smoke-test.mjs",
+    "diagnose": "pnpm --filter @md-converter/backend diagnose"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.12.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1"
+  }
+}

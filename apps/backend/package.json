@@ -1,0 +1,36 @@
+{
+  "name": "@md-converter/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API locale per la conversione dei documenti",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false --env-file-if-exists=../../.env src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "diagnose": "tsx --env-file-if-exists=../../.env src/cli/diagnose.ts"
+  },
+  "dependencies": {
+    "@fastify/multipart": "^10.1.6",
+    "@fastify/static": "^10.1.8",
+    "@md-converter/shared": "workspace:*",
+    "fastify": "^5.12.7",
+    "pdfjs-dist": "^6.4.299",
+    "pngjs": "^7.0.0",
+    "yauzl": "^3.4.0",
+    "yazl": "^3.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/pngjs": "^6.0.5",
+    "@types/yauzl": "^3.4.0",
+    "@types/yazl": "^3.3.1",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.5"
+  }
+}
