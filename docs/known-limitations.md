@@ -54,3 +54,8 @@
 - Una sola lingua dell'interfaccia (italiano); la struttura per aggiungerne altre è pronta
   (vedi [extending.md](extending.md)).
 - Un job accetta nuovi file solo prima dell'avvio: per altri file si usa "Nuova conversione".
+- **LibreOffice è lento su Windows**: ogni conversione usa un profilo utente nuovo (serve a evitare
+  blocchi tra conversioni parallele) e LibreOffice impiega molto tempo a crearlo. Misurato su
+  Windows 11: DOCX → PDF 33–55 s, Markdown → PDF fino a 80 s, contro 2–6 s per le conversioni
+  con Pandoc. Il tempo per creare il profilo pesa più del documento stesso. Il riuso di un profilo
+  condiviso è stato provato ma non ha prodotto risultati affidabili, quindi non è stato adottato.

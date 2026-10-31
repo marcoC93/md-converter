@@ -130,4 +130,11 @@ describe('buildChildEnv', () => {
     expect(env.PANDOC_PATH).toBeUndefined();
     expect(env.TMPDIR).toBe(path.join('/work/job', 'tmp'));
   });
+
+  it('mette in testa al PATH le cartelle degli strumenti richiamati da altri strumenti', () => {
+    const env = buildChildEnv('/work/job', { Path: '/usr/bin' }, ['/opt/tesseract']);
+    expect(env.PATH).toBe(['/opt/tesseract', '/usr/bin'].join(path.delimiter));
+    // Una sola variabile PATH, anche quando Windows la chiama "Path".
+    expect(env.Path).toBeUndefined();
+  });
 });

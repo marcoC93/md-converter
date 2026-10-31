@@ -30,6 +30,9 @@ export class CancelledError extends Error {
   }
 }
 
+/** Strumenti avviati da altri strumenti: la loro cartella va nel PATH dei processi figli. */
+const NESTED_TOOLS: readonly ToolId[] = ['tesseract'];
+
 export function createToolExecutor(resolvePath: (tool: ToolId) => string | null): ToolExecutor {
   return async (tool, args, options) => {
     const command = resolvePath(tool);
@@ -40,11 +43,14 @@ export function createToolExecutor(resolvePath: (tool: ToolId) => string | null)
       );
     }
     await mkdir(path.join(options.cwd, 'tmp'), { recursive: true });
+    const extraPathDirs = NESTED_TOOLS.map(resolvePath)
+      .filter((resolved): resolved is string => resolved !== null)
+      .map((resolved) => path.dirname(resolved));
     return runProcess({
       command,
       args,
       cwd: options.cwd,
-      env: buildChildEnv(options.cwd),
+      env: buildChildEnv(options.cwd, process.env, extraPathDirs),
       timeoutMs: options.timeoutMs,
       signal: options.signal,
       successExitCodes: options.successExitCodes,

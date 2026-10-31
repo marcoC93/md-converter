@@ -91,6 +91,55 @@ Se qualcosa non funziona, usa Docker Desktop o WSL2 (Ubuntu): in WSL2 puoi segui
 Nota: `ocrmypdf` installato con pip crea `ocrmypdf.exe`. Il backend **rifiuta** volutamente file
 `.cmd` o `.bat`, perché richiederebbero di avviare una shell.
 
+## 5-bis. Installazione senza diritti di amministratore (verificata)
+
+Procedura provata su Windows 11 con un utente **senza** privilegi di amministratore. Tutto va in
+`%LOCALAPPDATA%\md-converter-tools`, niente viene installato per tutto il sistema.
+
+1. **Pandoc**, installazione per utente (finisce in `%LOCALAPPDATA%\Pandoc`, trovato in automatico):
+
+   ```powershell
+   winget install --id JohnMacFarlane.Pandoc --scope user
+   ```
+
+2. **LibreOffice**: l'MSI si installa solo per tutto il sistema, ma si può **estrarre** con
+   un'installazione amministrativa, che non richiede elevazione:
+
+   ```powershell
+   $tools = "$env:LOCALAPPDATA\md-converter-tools"
+   winget download --id TheDocumentFoundation.LibreOffice --download-directory "$tools\downloads"
+   $msi = (Get-ChildItem "$tools\downloads\*.msi")[0].FullName
+   Start-Process msiexec.exe -Wait -ArgumentList '/a', "`"$msi`"", '/qn', "TARGETDIR=`"$tools\libreoffice`""
+   ```
+
+3. **Tesseract**: l'installer richiede l'amministratore, ma si può estrarre con 7-Zip; la lingua
+   italiana si scarica dal repository ufficiale `tesseract-ocr/tessdata_fast`:
+
+   ```powershell
+   winget download --id UB-Mannheim.TesseractOCR --download-directory "$tools\downloads\tesseract"
+   & "C:\Program Files\7-Zip\7z.exe" x -y "-o$tools\tesseract" "$tools\downloads\tesseract\*.exe"
+   Invoke-WebRequest https://github.com/tesseract-ocr/tessdata_fast/raw/main/ita.traineddata -OutFile "$tools\tesseract\tessdata\ita.traineddata"
+   ```
+
+4. **OCRmyPDF** per utente. Dalla versione 17 usa pypdfium2 e **non richiede Ghostscript**:
+
+   ```powershell
+   py -m pip install --user ocrmypdf
+   ```
+
+5. Indica i percorsi in `.env`, nella radice del progetto:
+
+   ```
+   LIBREOFFICE_PATH=C:\Users\<utente>\AppData\Local\md-converter-tools\libreoffice\program\soffice.com
+   TESSERACT_PATH=C:\Users\<utente>\AppData\Local\md-converter-tools\tesseract\tesseract.exe
+   OCRMYPDF_PATH=C:\Users\<utente>\AppData\Roaming\Python\Python314\Scripts\ocrmypdf.exe
+   ```
+
+   Non serve aggiungere Tesseract al PATH: il backend passa a OCRmyPDF un PATH che contiene già la
+   cartella del Tesseract configurato.
+
+6. Verifica con `pnpm diagnose`: tutti e quattro gli strumenti devono risultare `[OK ]`.
+
 ## 6. Controllo del PATH
 
 Per vedere dove Windows trova un programma:

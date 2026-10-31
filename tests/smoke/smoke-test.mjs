@@ -75,9 +75,13 @@ const CASES = [
   {
     name: 'PDF scansionato → Markdown con OCR',
     fixture: 'scanned.pdf',
-    options: { outputFormat: 'markdown', ocr: { enabled: true, languages: ['eng'], force: false } },
-    check: () => true,
-    ocr: true,
+    options: {
+      outputFormat: 'markdown',
+      imageMode: 'embedded',
+      ocr: { enabled: true, languages: ['ita', 'eng'], force: false },
+    },
+    // Il font a blocchi della fixture fa leggere "SCAMSIONE": verifichiamo la parte stabile.
+    check: (b) => b.toString().toUpperCase().includes('DI PROVA'),
   },
 ];
 
@@ -129,12 +133,6 @@ async function runCase(testCase) {
       await (await api('GET', `/api/jobs/${job.id}/files/${file.id}/download`)).arrayBuffer(),
     );
     if (!testCase.check(result)) throw new Error('contenuto del risultato inatteso');
-    if (testCase.ocr) {
-      const text = result.toString().toUpperCase();
-      console.log(
-        `      testo OCR riconosciuto: ${/SCANSIONE|PROVA/.test(text) ? 'sì' : 'no (font di prova molto stilizzato)'}`,
-      );
-    }
     return { ms: Date.now() - started, warnings: current.result?.warnings ?? [] };
   } finally {
     await fetch(`${BASE_URL}/api/jobs/${job.id}`, { method: 'DELETE' });
@@ -154,7 +152,7 @@ function capabilityFor(report, testCase) {
     (testCase.options.mode ?? 'simple') === 'simple'
       ? capability?.simple
       : capability?.highFidelity;
-  return Boolean(modeOk && (!testCase.ocr || capability?.ocr));
+  return Boolean(modeOk && (!testCase.options.ocr?.enabled || capability?.ocr));
 }
 
 async function main() {

@@ -135,3 +135,20 @@ chiamare Pandoc. Così nessun documento può far scaricare risorse da Internet.
   `apps/backend/test/integration/api.test.ts`.
 - **Nota sui tempi misurati dal client:** su questa macchina le richieste HTTP locali mostrano
   spesso ~450 ms di latenza aggiuntiva, indipendente dalla conversione (vedi la sezione Fase 7).
+
+## Installazione degli strumenti mancanti su Windows senza amministratore (2026-10-31)
+
+- Installati per l'utente corrente: Pandoc 3.13 (`winget --scope user`), LibreOffice 26.8.2.2
+  (MSI estratto con `msiexec /a`), Tesseract 5.4.0 (installer estratto con 7-Zip, lingua `ita`
+  aggiunta da `tesseract-ocr/tessdata_fast`), OCRmyPDF 17.13 (`pip install --user`, usa pypdfium2,
+  senza Ghostscript). Procedura in `install-windows.md`, sezione 5-bis.
+- **Problema:** OCRmyPDF avvia `tesseract` cercandolo nel PATH, ma il backend passa ai processi
+  figli il PATH di sistema, dove Tesseract non c'è. **Soluzione:** `createToolExecutor` mette in
+  testa al PATH dei processi figli la cartella del Tesseract rilevato. Inoltre `buildChildEnv`
+  passa una sola variabile `PATH`, invece di `PATH` e `Path` insieme come succedeva su Windows.
+- **Problema:** il test reale dell'OCR cercava il testo nel risultato ZIP (immagini separate),
+  quindi falliva anche quando l'OCR funzionava. **Soluzione:** il test e lo smoke test usano le
+  immagini incorporate (un `.md` leggibile) e verificano "DI PROVA". Il font a blocchi della
+  fixture fa leggere "SCAMSIONE" invece di "SCANSIONE".
+- **Verifica:** `pnpm smoke` 10/10 con gli strumenti reali, test `real-tools` 10/10.
+  LibreOffice impiega 33–80 s per conversione (vedi `known-limitations.md`).

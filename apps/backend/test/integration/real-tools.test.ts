@@ -201,12 +201,15 @@ describe('strumenti reali', () => {
     async () => {
       const { payload } = await convert(
         'scanned.pdf',
+        // "embedded": il risultato è un .md leggibile come testo (con "separate" sarebbe uno ZIP).
         options({
           outputFormat: 'markdown',
-          ocr: { enabled: true, languages: ['eng'], force: false },
+          imageMode: 'embedded',
+          ocr: { enabled: true, languages: ['ita', 'eng'], force: false },
         }),
       );
-      expect(payload.toString().toUpperCase()).toMatch(/SCANSIONE|PROVA/);
+      // Il font a blocchi della fixture fa leggere "SCAMSIONE": verifichiamo la parte stabile.
+      expect(payload.toString().toUpperCase()).toContain('DI PROVA');
     },
   );
 });
