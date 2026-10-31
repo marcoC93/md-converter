@@ -35,6 +35,8 @@ export interface JobRecord {
   started: boolean;
   files: Map<string, FileRecord>;
   cleanupTimer: NodeJS.Timeout | null;
+  /** Numero di modifiche pubblicate: vedi `JobSnapshot.revision`. */
+  revision: number;
 }
 
 export function totalSize(job: JobRecord): number {
@@ -74,6 +76,7 @@ export function jobSnapshot(job: JobRecord): JobSnapshot {
     started: job.started,
     files: [...job.files.values()].map(fileSnapshot),
     totalSizeBytes: totalSize(job),
+    revision: job.revision,
   };
 }
 

@@ -119,6 +119,9 @@ export function createConversionQueue(deps: QueueDependencies) {
 
   /** Applica lo stato ricevuto dal server, aggiungendo i file che il browser non conosce (es. dopo un refresh). */
   function applySnapshot(snapshot: JobSnapshot): void {
+    // La risposta di una richiesta HTTP può arrivare dopo un evento SSE più recente:
+    // senza questo controllo uno stato vecchio ("converting") sovrascriverebbe quello finale.
+    if (job.value?.id === snapshot.id && snapshot.revision < job.value.revision) return;
     job.value = snapshot;
     const known = new Set(items.value.map((item) => item.fileId));
     // Con upload in corso un file sconosciuto è quasi sempre il nostro: lo associamo alla fine dell'upload.

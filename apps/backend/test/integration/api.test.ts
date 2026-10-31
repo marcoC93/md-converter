@@ -398,6 +398,25 @@ describe('API', () => {
       });
     });
 
+    it('la revisione cresce: lo stato finale è più recente della risposta di /start', async () => {
+      const job = await createJob();
+      await upload(job.id, 'a.pdf', await readFixture('text.pdf'));
+      // PDF → PDF fallisce subito, mentre /start sta ancora rispondendo (come con uno strumento mancante).
+      const start = (
+        await app.inject({
+          method: 'POST',
+          url: `/api/jobs/${job.id}/start`,
+          headers: HOST,
+          payload: { ...START_OPTIONS, outputFormat: 'pdf' },
+        })
+      ).json<JobSnapshot>();
+      await application.jobs.waitForIdle();
+      const final = application.jobs.getJob(job.id);
+      expect(final.files[0]?.status).toBe('failed');
+      expect(final.revision).toBeGreaterThan(start.revision);
+      expect(start.revision).toBeGreaterThan(job.revision);
+    });
+
     it('il download di un risultato non pronto restituisce 409', async () => {
       const job = await createJob();
       const file = (await upload(job.id, 'a.md', '# a')).json();

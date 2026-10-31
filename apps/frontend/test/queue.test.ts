@@ -28,7 +28,14 @@ function fileSnapshot(
   };
 }
 
-function jobSnapshot(files: FileSnapshot[] = [], started = false): JobSnapshot {
+// Ogni stato creato nei test è più recente del precedente, come sul server.
+let revisionCounter = 0;
+
+function jobSnapshot(
+  files: FileSnapshot[] = [],
+  started = false,
+  revision = ++revisionCounter,
+): JobSnapshot {
   return {
     id: JOB_ID,
     createdAt: new Date().toISOString(),
@@ -36,6 +43,7 @@ function jobSnapshot(files: FileSnapshot[] = [], started = false): JobSnapshot {
     started,
     files,
     totalSizeBytes: 0,
+    revision,
   };
 }
 
@@ -158,6 +166,38 @@ describe('coda di conversione', () => {
     await flush();
     sources[0]!.emit('job', jobSnapshot([fileSnapshot(id, 'a.md')]));
     expect(queue.rows.value).toHaveLength(1);
+  });
+
+  it('ignora una risposta HTTP più vecchia dell\'ultimo evento SSE (niente "conversione" infinita)', async () => {
+    const id = '44444444-4444-4444-8444-444444444444';
+    let releaseStart!: () => void;
+    const staleConverting = jobSnapshot(
+      [fileSnapshot(id, 'a.pdf', { status: 'converting' })],
+      true,
+      100,
+    );
+    const { queue, uploads, sources } = setup({
+      startJob: vi.fn(
+        () =>
+          new Promise<JobSnapshot>((resolve) => (releaseStart = () => resolve(staleConverting))),
+      ),
+    });
+    await queue.init();
+    queue.addFiles([new File(['%PDF-'], 'a.pdf')]);
+    await flush();
+    uploads[0]!.resolve(fileSnapshot(id, 'a.pdf'));
+    await flush();
+    const starting = queue.start();
+    // Il server fallisce subito e lo notifica via SSE prima che arrivi la risposta di /start.
+    const failed = fileSnapshot(id, 'a.pdf', {
+      status: 'failed',
+      error: { code: 'DEPENDENCY_MISSING', message: 'x', correlationId: 'c' },
+    });
+    sources[0]!.emit('job', jobSnapshot([failed], true, 101));
+    releaseStart();
+    await starting;
+    expect(queue.rows.value[0]?.status).toBe('failed');
+    expect(queue.isFinished.value).toBe(true);
   });
 
   it('segue gli aggiornamenti del server fino al completamento', async () => {

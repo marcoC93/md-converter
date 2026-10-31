@@ -22,7 +22,8 @@
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
     "fixtures": "node tests/fixtures/scripts/generate-fixtures.mjs",
     "smoke": "node tests/smoke/smoke-test.mjs",
-    "diagnose": "pnpm --filter @md-converter/backend diagnose"
+    "diagnose": "pnpm --filter @md-converter/backend diagnose",
+    "bench": "node tests/benchmark/conversion-benchmark.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

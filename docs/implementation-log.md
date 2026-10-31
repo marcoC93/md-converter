@@ -118,3 +118,20 @@ chiamare Pandoc. Così nessun documento può far scaricare risorse da Internet.
   salvato con UUID e mostrato come `passwd.md`, `fake.pdf` → 415 `INVALID_FILE_CONTENT`, nessun
   riferimento a host esterni nel bundle del frontend (solo namespace XML e URL di documentazione
   di Vue, mai richiesti).
+
+## Correzione — conversione che "non termina" nell'interfaccia (2026-10-31)
+
+- **Sintomo:** con `text.pdf` e uscita Word (Pandoc non installato) l'interfaccia restava su
+  "Conversione" per sempre, anche se il server aveva già segnato il file come fallito.
+- **Benchmark** (`pnpm bench`): lato server nessuna conversione si blocca. PDF → Markdown richiede
+  25–80 ms (dai log del server); i casi senza strumento falliscono in pochi millisecondi.
+- **Causa:** la risposta di `POST /start` contiene lo stato preso mentre il file era ancora
+  `converting`. Quando la conversione fallisce subito, l'evento SSE `failed` arriva al browser
+  _prima_ di quella risposta, che poi lo sovrascrive con lo stato vecchio; nessun altro evento
+  arriva più e la riga resta bloccata.
+- **Soluzione:** `JobSnapshot.revision`, incrementata dal backend a ogni modifica pubblicata; il
+  frontend scarta gli stati con revisione inferiore a quella già mostrata. Test di regressione in
+  `apps/frontend/test/queue.test.ts` (fallisce senza la correzione) e
+  `apps/backend/test/integration/api.test.ts`.
+- **Nota sui tempi misurati dal client:** su questa macchina le richieste HTTP locali mostrano
+  spesso ~450 ms di latenza aggiuntiva, indipendente dalla conversione (vedi la sezione Fase 7).

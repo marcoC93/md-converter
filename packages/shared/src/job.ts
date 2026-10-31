@@ -61,6 +61,11 @@ export interface JobSnapshot {
   started: boolean;
   files: FileSnapshot[];
   totalSizeBytes: number;
+  /**
+   * Cresce a ogni cambio di stato. Il browser riceve lo stato sia dalle risposte HTTP sia dagli
+   * eventi SSE, che possono arrivare in ordine diverso: tiene sempre la revisione più alta.
+   */
+  revision: number;
 }
 
 export interface JobReportEntry {

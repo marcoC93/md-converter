@@ -73,6 +73,20 @@ Esegue tutte le conversioni con gli strumenti reali contro l'istanza in ascolto 
 `http://127.0.0.1:8080` (modificabile con `BASE_URL`). Su un'installazione nativa incompleta usa
 `pnpm smoke -- --allow-missing` per saltare le conversioni senza strumento.
 
+## Benchmark delle conversioni
+
+Con l'app in esecuzione (`pnpm start` o Docker):
+
+```bash
+pnpm bench
+```
+
+Per ogni combinazione di fixture, formato e modalità mostra durata minima/mediana/massima,
+esito e sequenza degli stati osservati. Un caso che non termina entro 60 secondi viene segnato
+come `BLOCCATO` e lo script esce con codice 1. Opzioni: `pnpm bench -- --runs=10`, `BASE_URL=...`.
+I tempi includono la latenza HTTP del client: per la durata pura della conversione guarda il campo
+`durationMs` delle righe `file converted` nei log del server.
+
 ## Fixture
 
 `tests/fixtures/files/` contiene documenti inventati generati da

@@ -95,6 +95,7 @@ export class JobService {
       started: false,
       files: new Map(),
       cleanupTimer: null,
+      revision: 0,
     };
     this.jobs.set(id, job);
     this.logger.info({ jobId: id }, 'job created');
@@ -467,7 +468,9 @@ export class JobService {
     job.lastActivityAt = Date.now();
   }
 
+  /** Ogni modifica dello stato passa da qui: la revisione cresce prima di notificarla. */
   private publish(job: JobRecord): void {
+    job.revision++;
     if (this.jobs.has(job.id)) this.events.publish(job.id, { type: 'job', job: jobSnapshot(job) });
   }
 
